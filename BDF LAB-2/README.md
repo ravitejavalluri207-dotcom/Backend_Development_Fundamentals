@@ -12,6 +12,21 @@
 
 ---
 
+## 🚀 Deployed Application
+
+The API is live and accessible at:
+
+**https://backend-development-fundamentals-1-x9qa.onrender.com/**
+
+You can test the endpoints directly using the base URL above. For example:
+
+- **GET all books:** https://backend-development-fundamentals-1-x9qa.onrender.com/books/
+- **GET single book:** https://backend-development-fundamentals-1-x9qa.onrender.com/books/1/
+
+> **Note:** The server is hosted on Render's free tier. It may take 30–60 seconds to wake up on the first request.
+
+---
+
 ## Objective
 
 The objective of this lab is to connect an Express.js server with an SQLite database and implement CRUD operations (Create, Read, Update, Delete) using HTTP routes. The application uses asynchronous JavaScript with `async/await` and parameterized SQL queries to manage book records.
@@ -57,7 +72,7 @@ BDF LAB-2/
 ### 1. Navigate to the Lab 2 Directory
 
 ```bash
-cd lab-02
+cd "BDF LAB-2"
 ```
 
 ### 2. Install Dependencies
@@ -156,12 +171,23 @@ For POST and PUT requests, select **Body → raw → JSON** in Postman or Thunde
 
 Test the following operations using Postman or Thunder Client.
 
+**Local (development):**
+
 1. **GET all books:** `http://localhost:3000/books/`
 2. **GET a single book:** `http://localhost:3000/books/1/`
 3. **GET a nonexistent book:** `http://localhost:3000/books/999/`
 4. **POST a new book:** `http://localhost:3000/books/`
 5. **PUT an existing book:** `http://localhost:3000/books/11/`
 6. **DELETE a book:** `http://localhost:3000/books/11/`
+
+**Deployed (Render):**
+
+1. **GET all books:** `https://backend-development-fundamentals-1-x9qa.onrender.com/books/`
+2. **GET a single book:** `https://backend-development-fundamentals-1-x9qa.onrender.com/books/1/`
+3. **GET a nonexistent book:** `https://backend-development-fundamentals-1-x9qa.onrender.com/books/999/`
+4. **POST a new book:** `https://backend-development-fundamentals-1-x9qa.onrender.com/books/`
+5. **PUT an existing book:** `https://backend-development-fundamentals-1-x9qa.onrender.com/books/11/`
+6. **DELETE a book:** `https://backend-development-fundamentals-1-x9qa.onrender.com/books/11/`
 
 Verify the HTTP status codes and JSON responses for each operation. After deleting a book successfully, a GET request for the same ID should return `404 Not Found`.
 
