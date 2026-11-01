@@ -4,7 +4,7 @@
 - **Name:** Valluri Ravi Teja
 - **Registration Number:** 252U1R9166
 - **Section:** CSE GEN-AI 2C
-- **GitHub Repository:** [https://github.com/ravitejavalluri207-dotcom/Backend_Development_Fundamentals](https://github.com/ravitejavalluri207-dotcom/Backend_Development_Fundamentals)
+- **GitHub Repository:** [https://github.com/ravitejavalluri207-dotcom/BDF-lab-01](https://github.com/ravitejavalluri207-dotcom/BDF-lab-01)
 
 ---
 
