@@ -70,7 +70,8 @@ lab-01/
 
 ---
 
-## Screenshots
+## Deployment
+- **Deployed in Render** (https://backend-development-fundamentals-95db.onrender.com/)
 
 
 ## Screenshots

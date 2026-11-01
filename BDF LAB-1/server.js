@@ -14,7 +14,7 @@ app.use((req, res, next) => {
 
 // GET /
 app.get("/", (req, res) => {
-    res.status(200).send("Welcome to my Node.js and Express server!");
+    res.status(200).send("Hello");
 });
 
 // GET /about
