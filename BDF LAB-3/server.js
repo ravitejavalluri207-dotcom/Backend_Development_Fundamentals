@@ -16,27 +16,56 @@ const initializeDBAndServer = async () => {
       driver: sqlite3.Database,
     })
     await db.exec(`
-  CREATE TABLE IF NOT EXISTS book (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT,
-    author TEXT,
-    price REAL,
-    pages INTEGER
-  )
-`)
+      CREATE TABLE IF NOT EXISTS book (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT,
+        author TEXT,
+        price REAL,
+        pages INTEGER
+      )
+    `)
     const books = await db.get('SELECT COUNT(*) AS count FROM book')
 
     if (books.count === 0) {
       await db.run(
-        `INSERT INTO book (title, author, price, pages)
-     VALUES (?, ?, ?, ?)`,
-        ['JavaScript Basics', 'John Smith', 300, 250]
+        `INSERT INTO book (title, author, price, pages) VALUES (?, ?, ?, ?)`,
+        ['JavaScript for Beginners', 'Mark Myers', 350, 280]
       )
-
       await db.run(
-        `INSERT INTO book (title, author, price, pages)
-     VALUES (?, ?, ?, ?)`,
-        ['Python Programming', 'David Smith', 450, 350]
+        `INSERT INTO book (title, author, price, pages) VALUES (?, ?, ?, ?)`,
+        ['Clean Code Basics', 'Daniel Green', 480, 320]
+      )
+      await db.run(
+        `INSERT INTO book (title, author, price, pages) VALUES (?, ?, ?, ?)`,
+        ['Computer Organization', 'William Stallings', 620, 720]
+      )
+      await db.run(
+        `INSERT INTO book (title, author, price, pages) VALUES (?, ?, ?, ?)`,
+        ['Practical SQL', 'Anthony DeBarros', 450, 390]
+      )
+      await db.run(
+        `INSERT INTO book (title, author, price, pages) VALUES (?, ?, ?, ?)`,
+        ['Python Projects', 'Laura Cassell', 390, 300]
+      )
+      await db.run(
+        `INSERT INTO book (title, author, price, pages) VALUES (?, ?, ?, ?)`,
+        ['Fundamentals of Networking', 'James Kurose', 580, 650]
+      )
+      await db.run(
+        `INSERT INTO book (title, author, price, pages) VALUES (?, ?, ?, ?)`,
+        ['Learning Node.js', 'Ethan Brown', 520, 410]
+      )
+      await db.run(
+        `INSERT INTO book (title, author, price, pages) VALUES (?, ?, ?, ?)`,
+        ['C++ Programming Guide', 'Stephen Prata', 550, 850]
+      )
+      await db.run(
+        `INSERT INTO book (title, author, price, pages) VALUES (?, ?, ?, ?)`,
+        ['Basics of Cloud Computing', 'Thomas Erl', 470, 360]
+      )
+      await db.run(
+        `INSERT INTO book (title, author, price, pages) VALUES (?, ?, ?, ?)`,
+        ['Introduction to Data Science', 'Joel Grus', 490, 340]
       )
     }
     app.listen(process.env.PORT || 3000, () => {
