@@ -2,10 +2,6 @@
 node_modules/
 */node_modules/
 
-# SQLite database files (auto-created at runtime)
-*.db
-*/database.db
-
 # Environment Variables
 .env
 .env.*
