@@ -1,6 +1,6 @@
 const express = require('express')
 const path = require('path')
-const {open} = require('sqlite')
+const { open } = require('sqlite')
 const sqlite3 = require('sqlite3')
 
 const app = express()
@@ -15,6 +15,30 @@ const initializeDBAndServer = async () => {
       filename: dbPath,
       driver: sqlite3.Database,
     })
+    await db.exec(`
+  CREATE TABLE IF NOT EXISTS book (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT,
+    author TEXT,
+    price REAL,
+    pages INTEGER
+  )
+`)
+    const books = await db.get('SELECT COUNT(*) AS count FROM book')
+
+    if (books.count === 0) {
+      await db.run(
+        `INSERT INTO book (title, author, price, pages)
+     VALUES (?, ?, ?, ?)`,
+        ['JavaScript Basics', 'John Smith', 300, 250]
+      )
+
+      await db.run(
+        `INSERT INTO book (title, author, price, pages)
+     VALUES (?, ?, ?, ?)`,
+        ['Python Programming', 'David Smith', 450, 350]
+      )
+    }
     app.listen(process.env.PORT || 3000, () => {
       console.log('Server Running at http://localhost:3000/')
     })
@@ -71,7 +95,7 @@ app.get('/books/', async (request, response) => {
 
 // Get Book API
 app.get('/books/:bookId/', async (request, response) => {
-  const {bookId} = request.params
+  const { bookId } = request.params
   const getBookQuery = `
     SELECT
       *
@@ -91,7 +115,7 @@ app.get('/books/:bookId/', async (request, response) => {
 // Post Book API
 app.post('/books/', async (request, response) => {
   const bookDetails = request.body
-  const {title, author, price, pages} = bookDetails
+  const { title, author, price, pages } = bookDetails
 
   if (!title || !author || price === undefined || isNaN(Number(price))) {
     response.status(400)
@@ -108,14 +132,14 @@ app.post('/books/', async (request, response) => {
   const dbResponse = await db.run(addBookQuery, [title, author, price, pages])
   const bookId = dbResponse.lastID
   response.status(201)
-  response.send({bookId: bookId})
+  response.send({ bookId: bookId })
 })
 
 // Put Book API
 app.put('/books/:bookId/', async (request, response) => {
-  const {bookId} = request.params
+  const { bookId } = request.params
   const bookDetails = request.body
-  const {title, author, price, pages} = bookDetails
+  const { title, author, price, pages } = bookDetails
 
   const updateBookQuery = `
     UPDATE
@@ -134,7 +158,7 @@ app.put('/books/:bookId/', async (request, response) => {
 
 // Delete Book API
 app.delete('/books/:bookId/', async (request, response) => {
-  const {bookId} = request.params
+  const { bookId } = request.params
   const deleteBookQuery = `
     DELETE FROM
       book
