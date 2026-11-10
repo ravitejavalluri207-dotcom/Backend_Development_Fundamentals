@@ -1,89 +1,107 @@
-# Lab 3 – Advanced REST API with Query Parameters, Validation and Status Codes
+# Lab 3: Advanced REST API with Query Parameters and Validation
 
 ## Student Details
 
-| Field           | Details               |
-|-----------------|-----------------------|
-| Name            | Valluri Ravi Teja     |
-| Reg. Number     | 252U1R9166            |
-| Section         | CSE GEN-AI 2C         |
-| Institution     | Aurora University     |
-| Faculty         | Joel Prashanth D      |
+- **Name:** Valluri Ravi Teja
+- **Registration Number:** 252U1R9166
+- **Section:** CSE GEN-AI 2C
+- **Institution:** Aurora University
+- **Course:** Backend Development Fundamentals
+- **Faculty:** Joel Prashanth D
 
 ---
 
-## Live Deployment URL
+## 🚀 Deployed Application
 
-> "https://backend-development-fundamentals-3-8cj6.onrender.com/"
+The API is live and accessible on Render at:
+
+**https://backend-development-fundamentals-3-8cj6.onrender.com/**
+
+### Live Test Endpoints:
+
+- **GET all books:** https://backend-development-fundamentals-3-8cj6.onrender.com/books/
+- **GET single book:** https://backend-development-fundamentals-3-8cj6.onrender.com/books/1/
+- **GET search by title:** https://backend-development-fundamentals-3-8cj6.onrender.com/books/?search_q=python
+- **GET sort by price (DESC):** https://backend-development-fundamentals-3-8cj6.onrender.com/books/?order_by=price&order=DESC
+- **GET pagination (limit & offset):** https://backend-development-fundamentals-3-8cj6.onrender.com/books/?limit=3&offset=0
+- **GET price filter:** https://backend-development-fundamentals-3-8cj6.onrender.com/books/?min_price=400&max_price=600
+
+> **Note:** The server is hosted on Render's free tier. It may take 30–60 seconds to wake up on the first request.
 
 ---
 
 ## Objective
 
-Build an advanced REST API using Node.js, Express.js and SQLite that supports:
-
-- Full CRUD operations on a `book` table
-- Query parameters for search, sorting, pagination and price filtering
-- Input validation with proper HTTP status codes
-- Parameterized SQL queries to prevent SQL injection
+The objective of Lab 3 is to extend the REST API built in Lab 2 by implementing:
+- Query parameters in `GET /books/` for filtering, sorting, and pagination
+- Parameterized SQL queries using `?` placeholders to prevent SQL injection
+- Input validation for required and numeric fields with proper HTTP status codes (`200`, `201`, `400`, `404`)
+- Full CRUD capabilities connected to SQLite database
 
 ---
 
 ## Technologies Used
 
-| Technology | Purpose                    |
-|------------|----------------------------|
-| Node.js    | JavaScript runtime         |
-| Express.js | HTTP server and routing    |
-| SQLite3    | Embedded database          |
-| sqlite     | Promise-based SQLite wrapper |
-| nodemon    | Auto-restart during development |
+- **Node.js** - JavaScript runtime environment
+- **Express.js** - Web framework for routing and middleware
+- **SQLite3** - Relational database engine
+- **sqlite** - Promise-based async wrapper for SQLite
+- **nodemon** - Development auto-restart utility
+- **Postman / Thunder Client** - API testing and verification
 
 ---
 
 ## Project Structure
 
-```
+```text
 BDF LAB-3/
-├── server.js          ← Express application with all 5 APIs
-├── seed.sql           ← Database schema and sample data
-├── database.db        ← SQLite database (auto-created from seed.sql)
-├── package.json       ← Project metadata and scripts
-├── package-lock.json  ← Dependency lock file
-└── README.md          ← This file
+├── screenshots/
+│   ├── Get all books.png
+│   ├── Search books.png
+│   ├── Sort ascending.png
+│   ├── Sort descending.png
+│   ├── Pagination.png
+│   ├── Second page.png
+│   ├── Minimum price.png
+│   ├── Maximum price.png
+│   └── Price range.png
+├── database.db
+├── package.json
+├── package-lock.json
+├── README.md
+├── seed.sql
+└── server.js
 ```
 
 ---
 
-## Installation and Running
+## Installation and Execution
 
-### 1. Install dependencies
+### 1. Navigate to the Lab 3 Directory
+
+```bash
+cd "BDF LAB-3"
+```
+
+### 2. Install Dependencies
 
 ```bash
 npm install
 ```
 
-### 2. Set up the database (first time only)
+### 3. Start the Server
 
-The `database.db` file is already included. If you need to recreate it, run `seed.sql` using any SQLite tool or the SQLite3 CLI:
-
+Development mode:
 ```bash
-sqlite3 database.db < seed.sql
+npm run dev
 ```
 
-### 3. Start the server
-
+Production mode:
 ```bash
 npm start
 ```
 
-Server runs at: `http://localhost:3000/`
-
-### 4. Development mode (auto-restart)
-
-```bash
-npm run dev
-```
+The server runs at: `http://localhost:3000/`
 
 ---
 
@@ -91,341 +109,136 @@ npm run dev
 
 ```sql
 CREATE TABLE IF NOT EXISTS book (
-    id     INTEGER PRIMARY KEY AUTOINCREMENT,
-    title  TEXT    NOT NULL,
-    author TEXT    NOT NULL,
-    price  INTEGER NOT NULL,
-    pages  INTEGER NOT NULL
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    author TEXT NOT NULL,
+    price INTEGER NOT NULL,
+    pages INTEGER NOT NULL
 );
 ```
-
-### Sample Data (from seed.sql)
-
-| id | title                        | author             | price | pages |
-|----|------------------------------|--------------------|-------|-------|
-| 1  | JavaScript for Beginners     | Mark Myers         | 350   | 280   |
-| 2  | Clean Code Basics            | Daniel Green       | 480   | 320   |
-| 3  | Computer Organization        | William Stallings  | 620   | 720   |
-| 4  | Practical SQL                | Anthony DeBarros   | 450   | 390   |
-| 5  | Python Projects              | Laura Cassell      | 390   | 300   |
-| 6  | Fundamentals of Networking   | James Kurose       | 580   | 650   |
-| 7  | Learning Node.js             | Ethan Brown        | 520   | 410   |
-| 8  | C++ Programming Guide        | Stephen Prata      | 550   | 850   |
-| 9  | Basics of Cloud Computing    | Thomas Erl         | 470   | 360   |
-| 10 | Introduction to Data Science | Joel Grus          | 490   | 340   |
 
 ---
 
 ## API Endpoints
 
-| Method | Endpoint          | Description              | Success Code |
-|--------|-------------------|--------------------------|--------------|
-| GET    | /books/           | Get all books (filtered) | 200          |
-| GET    | /books/:bookId/   | Get a single book        | 200          |
-| POST   | /books/           | Add a new book           | 201          |
-| PUT    | /books/:bookId/   | Update a book            | 200          |
-| DELETE | /books/:bookId/   | Delete a book            | 200          |
+| Method | Endpoint | Description | Status Code |
+|---|---|---|---|
+| GET | `/books/` | Retrieve all books (supports query params) | `200 OK` |
+| GET | `/books/:bookId/` | Retrieve a single book by ID | `200 OK` / `404 Not Found` |
+| POST | `/books/` | Add a new book (with input validation) | `201 Created` / `400 Bad Request` |
+| PUT | `/books/:bookId/` | Update existing book details | `200 OK` |
+| DELETE | `/books/:bookId/` | Remove a book | `200 OK` |
 
 ---
 
-## Query Parameters — GET /books/
+## Query Parameters for `GET /books/`
 
-| Parameter  | Default | Description                                              |
-|------------|---------|----------------------------------------------------------|
-| search_q   | `""`    | Search books by title (partial match)                    |
-| order_by   | `id`    | Column to sort by: `id`, `title`, `author`, `price`, `pages` |
-| order      | `ASC`   | Sort direction: `ASC` or `DESC`                          |
-| limit      | `10`    | Number of results to return                              |
-| offset     | `0`     | Number of results to skip                                |
-| min_price  | `0`     | Show books with price greater than or equal to this      |
-| max_price  | `999999`| Show books with price less than or equal to this         |
+| Parameter | Default | Allowed Values | Description |
+|---|---|---|---|
+| `search_q` | `""` | Any text | Partial match search on book title |
+| `order_by` | `id` | `id`, `title`, `author`, `price`, `pages` | Column used for sorting |
+| `order` | `ASC` | `ASC`, `DESC` | Sorting direction |
+| `limit` | `10` | Positive integer | Number of records to return |
+| `offset` | `0` | Non-negative integer | Number of records to skip |
+| `min_price` | `0` | Numeric | Minimum price filter |
+| `max_price` | `999999` | Numeric | Maximum price filter |
 
-### Example Request
-
-```
+### Combined Query Example:
+```text
 GET /books/?search_q=python&order_by=price&order=DESC&limit=5&offset=0&min_price=300&max_price=600
 ```
 
 ---
 
-## Sample Requests and Responses
+## Sample Requests
 
-### GET /books/ — All Books
-
-```
-GET http://localhost:3000/books/
-```
-
-Response `200`:
-```json
-[
-  { "id": 1, "title": "JavaScript for Beginners", "author": "Mark Myers", "price": 350, "pages": 280 },
-  { "id": 2, "title": "Clean Code Basics", "author": "Daniel Green", "price": 480, "pages": 320 }
-]
-```
-
----
-
-### GET /books/1/ — Single Book
-
-Response `200`:
-```json
-{ "id": 1, "title": "JavaScript for Beginners", "author": "Mark Myers", "price": 350, "pages": 280 }
-```
-
-Response `404`:
-```text
-Book Not Found
-```
-
----
-
-### POST /books/ — Add a Book
+### 1. Create a Book - POST `/books/`
 
 Request body:
 ```json
-{ "title": "Learning Python", "author": "Mark Lutz", "price": 450, "pages": 500 }
+{
+  "title": "Learning Python",
+  "author": "Mark Lutz",
+  "price": 450,
+  "pages": 500
+}
 ```
 
-Response `201`:
+Response (`201 Created`):
 ```json
-{ "bookId": 11 }
+{
+  "bookId": 11
+}
 ```
 
-Response `400` (missing or invalid fields):
+Validation Error (`400 Bad Request` if title, author, or price is invalid):
 ```text
 Invalid Request
 ```
 
----
-
-### PUT /books/1/ — Update a Book
+### 2. Update a Book - PUT `/books/1/`
 
 Request body:
 ```json
-{ "title": "JavaScript Advanced", "author": "Mark Myers", "price": 400, "pages": 300 }
+{
+  "title": "JavaScript Advanced",
+  "author": "Mark Myers",
+  "price": 400,
+  "pages": 300
+}
 ```
 
-Response `200`:
+Response (`200 OK`):
 ```text
 Book Updated Successfully
 ```
 
 ---
 
-### DELETE /books/1/ — Delete a Book
+## Screenshots
 
-Response `200`:
-```text
-Book Deleted Successfully
-```
+### 1. Get All Books
+![Get all books](./screenshots/Get%20all%20books.png)
 
----
+### 2. Search Books by Title (`search_q`)
+![Search books](./screenshots/Search%20books.png)
 
-## Validation Rules
+### 3. Sort Ascending (`order_by=price&order=ASC`)
+![Sort ascending](./screenshots/Sort%20ascending.png)
 
-### POST /books/ and PUT /books/:bookId/
+### 4. Sort Descending (`order_by=price&order=DESC`)
+![Sort descending](./screenshots/Sort%20descending.png)
 
-| Field  | Rule                              |
-|--------|-----------------------------------|
-| title  | Required, must not be empty       |
-| author | Required, must not be empty       |
-| price  | Required, must be a numeric value |
-| pages  | Optional                          |
+### 5. Pagination (`limit=3&offset=0`)
+![Pagination](./screenshots/Pagination.png)
 
-### GET /books/ Query Parameters
+### 6. Second Page (`limit=3&offset=3`)
+![Second page](./screenshots/Second%20page.png)
 
-| Parameter | Validation                                              |
-|-----------|---------------------------------------------------------|
-| order_by  | Must be one of: `id`, `title`, `author`, `price`, `pages` |
-| order     | Must be `ASC` or `DESC`                                 |
+### 7. Minimum Price Filter (`min_price=400`)
+![Minimum price](./screenshots/Minimum%20price.png)
 
----
+### 8. Maximum Price Filter (`max_price=500`)
+![Maximum price](./screenshots/Maximum%20price.png)
 
-## HTTP Status Codes
-
-| Code | Meaning                        |
-|------|--------------------------------|
-| 200  | Success (GET, PUT, DELETE)     |
-| 201  | Created (POST)                 |
-| 400  | Bad Request (invalid input)    |
-| 404  | Not Found (book does not exist)|
+### 9. Price Range Filter (`min_price=400&max_price=550`)
+![Price range](./screenshots/Price%20range.png)
 
 ---
 
-## Postman / Thunder Client Testing Checklist
+## Common Debugging Issues & Solutions
 
-### CRUD
-
-| # | Method | URL              | Body                                                      | Expected |
-|---|--------|------------------|-----------------------------------------------------------|----------|
-| 1 | GET    | /books/          | —                                                         | 200      |
-| 2 | GET    | /books/1/        | —                                                         | 200      |
-| 3 | POST   | /books/          | `{"title":"T","author":"A","price":100,"pages":50}`       | 201      |
-| 4 | PUT    | /books/1/        | `{"title":"New","author":"Auth","price":200,"pages":60}`  | 200      |
-| 5 | DELETE | /books/11/       | —                                                         | 200      |
-
-### Search and Sorting
-
-| # | URL                                    | Expected |
-|---|----------------------------------------|----------|
-| 6 | /books/?search_q=python                | 200      |
-| 7 | /books/?order_by=price&order=ASC       | 200      |
-| 8 | /books/?order_by=price&order=DESC      | 200      |
-
-### Pagination
-
-| #  | URL                             | Expected |
-|----|---------------------------------|----------|
-| 9  | /books/?limit=3&offset=0        | 200      |
-| 10 | /books/?limit=3&offset=3        | 200      |
-
-### Price Filters
-
-| #  | URL                                    | Expected |
-|----|----------------------------------------|----------|
-| 11 | /books/?min_price=400                  | 200      |
-| 12 | /books/?max_price=500                  | 200      |
-| 13 | /books/?min_price=400&max_price=550    | 200      |
-
-### Combined
-
-| #  | URL                                                                                           | Expected |
-|----|-----------------------------------------------------------------------------------------------|----------|
-| 14 | /books/?search_q=python&order_by=price&order=DESC&limit=5&offset=0&min_price=300&max_price=600 | 200     |
-
-### Validation — 400 Bad Request
-
-| #  | Method | URL       | Body                                       | Expected |
-|----|--------|-----------|--------------------------------------------|----------|
-| 15 | POST   | /books/   | `{"author":"A","price":100}`               | 400      |
-| 16 | POST   | /books/   | `{"title":"T","price":100}`                | 400      |
-| 17 | POST   | /books/   | `{"title":"T","author":"A","price":"abc"}` | 400      |
-| 18 | GET    | /books/?order_by=xyz | —                               | 400      |
-| 19 | GET    | /books/?order=RANDOM | —                               | 400      |
-
-### Not Found — 404
-
-| #  | Method | URL             | Expected |
-|----|--------|-----------------|----------|
-| 20 | GET    | /books/9999/    | 404      |
-| 21 | PUT    | /books/9999/    | 404      |
-| 22 | DELETE | /books/9999/    | 404      |
-
----
-
-## Debugging Problems and Solutions
-
-### 1. EADDRINUSE — Port already in use
-
-**Error:**
-```
-Error: listen EADDRINUSE: address already in use :::3000
-```
-**Cause:** Another process is already running on port 3000.
-
-**Fix:**
-```bash
-# Windows — find and kill the process
-netstat -ano | findstr :3000
-taskkill /PID <PID> /F
-```
-Or change the port in `server.js`:
-```js
-app.listen(3001, ...)
-```
-
----
-
-### 2. Wrong import path
-
-**Error:**
-```
-Error: Cannot find module './databse'
-```
-**Cause:** Typo in `require()` path.
-
-**Fix:** Double-check the path:
-```js
-// Wrong
-const {open} = require('sqlit')
-
-// Correct
-const {open} = require('sqlite')
-```
-
----
-
-### 3. SQLite table-name typo
-
-**Error:**
-```
-SQLITE_ERROR: no such table: books
-```
-**Cause:** Query uses `books` but the table was created as `book`.
-
-**Fix:** Make sure the table name in every query matches exactly:
-```js
-// Wrong
-await db.all('SELECT * FROM books;')
-
-// Correct
-await db.all('SELECT * FROM book;')
-```
-
----
-
-### 4. Missing await
-
-**Error:** Response returns `undefined` or an unresolved Promise.
-
-**Cause:** Forgot `await` before a database call.
-
-**Fix:**
-```js
-// Wrong
-const book = db.get('SELECT * FROM book WHERE id = ?;', [bookId])
-
-// Correct
-const book = await db.get('SELECT * FROM book WHERE id = ?;', [bookId])
-```
-
----
-
-## Render Deployment
-
-### SQLite Limitation on Render
-
-Render's free tier uses an **ephemeral file system** — the `database.db` file resets on every restart. Any data added after deployment is lost. For this lab, that is acceptable since we only need to demonstrate the API.
-
-### Deployment Steps
-
-1. Push code to GitHub (`main` branch)
-2. Go to [render.com](https://render.com) → **New → Web Service**
-3. Connect the `Backend_Development_Fundamentals` repository
-
-| Setting        | Value        |
-|----------------|--------------|
-| Branch         | main         |
-| Root Directory | BDF LAB-3    |
-| Build Command  | npm install  |
-| Start Command  | npm start    |
-
-4. Click **Deploy**
-5. Copy the live URL and paste it at the top of this README
-
----
-
-## GitHub Push Commands
-
-```bash
-git add "BDF LAB-3/" .gitignore
-git commit -m "Add Lab 3: Advanced REST API with query params, validation and status codes"
-git push
-```
+1. **EADDRINUSE (Port 3000 already in use):**
+   - Terminate the existing node process: `taskkill /PID <PID> /F` (Windows) or use dynamic port binding `process.env.PORT || 3000`.
+2. **Wrong Import Path:**
+   - Always ensure module names match installed packages (e.g., `require('sqlite')` not `require('./sqlite')`).
+3. **SQLite Table-Name Typo:**
+   - Keep table names consistent in SQL statements (`book` singular vs `books` plural).
+4. **Missing `await` on Database Operations:**
+   - Database operations return Promises. Always prefix queries with `await` (e.g., `const book = await db.get(...)`).
 
 ---
 
 ## Conclusion
 
-Lab 3 builds on Lab 2 by adding advanced query parameters, input validation, proper HTTP status codes, and SQL injection prevention using parameterized queries — all written in a simple, beginner-friendly Express and SQLite style.
+In this lab, I built a feature-complete REST API with Express.js and SQLite. I implemented advanced query parameters for search, sorting, pagination, and range filtering, secured SQL queries using parameterized statements, added request validation, and deployed the live service to Render.
