@@ -14,7 +14,7 @@
 
 ## Live Deployment URL
 
-> *(To be updated after Render deployment)*
+> "https://backend-development-fundamentals-3-8cj6.onrender.com/"
 
 ---
 
